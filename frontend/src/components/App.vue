@@ -29,11 +29,19 @@ export default {
   },
 
   created () {
-    let records = store.fetchDnsRecords()
-    for (var prop in records) {
-      if( records.hasOwnProperty(prop) ) {
-        Vue.set(this.dnsRecords, prop, records[prop])
-      }
+    console.log("App.created")
+    this.update()
+    store.on('dataloaded', this.update)
+  },
+
+  methods: {
+    update() {
+      console.log("App.update")
+      store.fetchDnsRecords().then(items => {
+        console.log("Fetched items")
+        console.log(items)
+        this.dnsRecords = items;
+      })
     }
   }
 

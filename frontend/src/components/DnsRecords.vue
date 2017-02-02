@@ -9,9 +9,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry in records">
+        <tr v-for="entry in entries">
           <td>{{ entry.name }}</td>
-          <td>{{ entry.ip }}</td>
+          <td>{{ entry.ips | join ',' }}</td>
         </tr>
       </tbody>
     </table>
@@ -24,7 +24,7 @@ export default {
 
   name: 'DnsRecords',
 
-  props: [ 'entries' ],
+  props: [ 'entries' ]
 
     /*
     {
@@ -46,32 +46,6 @@ export default {
       }
     }
     */
-
-  computed: {
-    records () {
-      console.log("Compute those DNS Records");
-      var dnsEntries = []
-      for (var prop in this.entries) {
-        if( this.entries.hasOwnProperty(prop) ) {
-          let record = this.entries[prop]
-
-          dnsEntries.push({
-            ip: record.IPs[0],
-            name: record.Name + '.' + record.Image + '.vm'
-          })
-
-          record.Aliases.forEach(alias => {
-            dnsEntries.push({
-              ip: record.IPs[0],
-              name: alias
-            })
-          })
-
-        }
-      }
-      return dnsEntries
-    }
-  }
 
 }
 </script>
