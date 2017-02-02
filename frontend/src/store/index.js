@@ -10,7 +10,7 @@ export default store
  */
 
 store.fetchDnsRecords = () => {
-  fetch('http://dnsdock.devtools.vm/services')
+  fetch('/api/dnsrecords')
     .then(function(response) {
       console.log(response)
       return response.json()
@@ -20,5 +20,6 @@ store.fetchDnsRecords = () => {
     })
     .catch(function(ex) {
       console.log('parsing failed', ex)
+      return {};
   })
 }

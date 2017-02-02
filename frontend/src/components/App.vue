@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <div class="row">
-        <dns-records></dns-records>
+        <dns-records :entries="dnsRecords"></dns-records>
         <!--<websites></websites>-->
       </div>
     </div>
@@ -29,7 +29,12 @@ export default {
   },
 
   created () {
-    this.dnsRecords = store.fetchDnsRecords()
+    let records = store.fetchDnsRecords()
+    for (var prop in records) {
+      if( records.hasOwnProperty(prop) ) {
+        Vue.set(this.dnsRecords, prop, records[prop])
+      }
+    }
   }
 
 }

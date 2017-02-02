@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry in dnsEntries">
+        <tr v-for="entry in records">
           <td>{{ entry.name }}</td>
           <td>{{ entry.ip }}</td>
         </tr>
@@ -24,48 +24,44 @@ export default {
 
   name: 'DnsRecords',
 
-  props: [ 'inputRecords' ],
+  props: [ 'entries' ],
 
-  data () {
-    return {
-      records: this.inputRecords
-      /*
-      {
-        "580350ffd5f6b34acabc648b666905769dd072185739a5559dd534f9643bf223": {
-          "Name":"dnsdock",
-          "Image":"devtools",
-          "IPs":["172.17.0.2"],
-          "TTL":-1,
-          "Aliases":[]
-        },
-        "a10b139072aeb626e0dc0120cf1e7a43e9d30cb4b9cde61ba43607872b95424c":{
-          "Name":"web",
-          "Image":"devtools",
-          "IPs":["172.17.0.3"],
-          "TTL":-1,
-          "Aliases": [
-            "other.devtools.vm"
-          ]
-        }
+    /*
+    {
+      "580350ffd5f6b34acabc648b666905769dd072185739a5559dd534f9643bf223": {
+        "Name":"dnsdock",
+        "Image":"devtools",
+        "IPs":["172.17.0.2"],
+        "TTL":-1,
+        "Aliases":[]
+      },
+      "a10b139072aeb626e0dc0120cf1e7a43e9d30cb4b9cde61ba43607872b95424c":{
+        "Name":"web",
+        "Image":"devtools",
+        "IPs":["172.17.0.3"],
+        "TTL":-1,
+        "Aliases": [
+          "other.devtools.vm"
+        ]
       }
-      */
     }
-  },
+    */
 
   computed: {
-    dnsEntries () {
-      var entries = []
-      for (var prop in this.records) {
-        if( this.records.hasOwnProperty(prop) ) {
-          let record = this.records[prop]
+    records () {
+      console.log("Compute those DNS Records");
+      var dnsEntries = []
+      for (var prop in this.entries) {
+        if( this.entries.hasOwnProperty(prop) ) {
+          let record = this.entries[prop]
 
-          entries.push({
+          dnsEntries.push({
             ip: record.IPs[0],
             name: record.Name + '.' + record.Image + '.vm'
           })
 
           record.Aliases.forEach(alias => {
-            entries.push({
+            dnsEntries.push({
               ip: record.IPs[0],
               name: alias
             })
@@ -73,7 +69,7 @@ export default {
 
         }
       }
-      return entries
+      return dnsEntries
     }
   }
 
