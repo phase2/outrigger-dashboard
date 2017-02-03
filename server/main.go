@@ -19,7 +19,6 @@ func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 	var records map[string]interface{}
 	json.NewDecoder(res.Body).Decode(&records)
 
-	log.Printf("Records returned: %s", records)
 	json.NewEncoder(w).Encode(records)
 }
 
@@ -27,10 +26,7 @@ func GetContainers(w http.ResponseWriter, req *http.Request) {
 	if client, err := docker.NewClientFromEnv(); err == nil {
 
 		if containers, err := client.ListContainers(docker.ListContainersOptions{All: false}); err == nil {
-
-			log.Printf("Containers: %s", containers)
 			json.NewEncoder(w).Encode(containers)
-
 		} else {
 			panic(err)
 		}
@@ -39,12 +35,17 @@ func GetContainers(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func Redirect(w http.ResponseWriter, req *http.Request) {
+	http.Redirect(w, req, "/static/", 301)
+}
+
 func main() {
 	router := mux.NewRouter()
 
-	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/Users/frank/Projects/devtools-dashboard/frontend/"))))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/app/"))))
 
+	router.HandleFunc("/", Redirect).Methods("GET")
 	router.HandleFunc("/api/dnsrecords", GetDNSRecords).Methods("GET")
 	router.HandleFunc("/api/containers", GetContainers).Methods("GET")
-	log.Fatal(http.ListenAndServe(":9090", router))
+	log.Fatal(http.ListenAndServe(":80", router))
 }
