@@ -1,6 +1,6 @@
 <template>
   <div class="col project">
-    <h2>Project {{ name }}</h2>
+    <h2>{{ name }}</h2>
     <table class="table table-striped table-hover table-bordered"">
       <thead>
         <tr>

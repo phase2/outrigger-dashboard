@@ -82,7 +82,7 @@ store.fetchContainersByProject = () => {
 store.processContainersByProject = (containers) => {
   let projects = {};
   containers.forEach((container) => {
-    let projectName = "Unclassified";
+    let projectName = "unclassified";
     if (container.Labels.hasOwnProperty('com.docker.compose.project')) {
       projectName = container.Labels['com.docker.compose.project'];
     }
