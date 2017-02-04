@@ -38,10 +38,10 @@ export default {
   methods: {
 
     displayNetworks(container) {
-      let networks = []
+      let networks = [];
       for (let name in container.NetworkSettings.Networks) {
         if ( container.NetworkSettings.Networks.hasOwnProperty(name) ) {
-          let settings = container.NetworkSettings.Networks[name]
+          let settings = container.NetworkSettings.Networks[name];
           networks.push(name + "(" + settings.IPAddress + ")")
         }
       }
@@ -49,26 +49,26 @@ export default {
     },
 
     displayPorts(container) {
-      let ports = []
+      let ports = [];
       container.Ports.forEach( (port) => {
-        let portVal = port.PrivatePort + "/" + port.Type
+        let portVal = port.PrivatePort + "/" + port.Type;
 
         if ([80, 443, 8080].includes(port.PrivatePort)) {
           portVal = this.makeLink(container, portVal, port.PrivatePort == "443")
         }
 
         ports.push(portVal)
-      })
+      });
       return ports.map(this.linebreak).join('')
     },
 
     displayRemoteMounts(container) {
-      let mounts = []
+      let mounts = [];
       container.Mounts.forEach( (mount) => {
         if ( !mount.hasOwnProperty("Driver") ) {
           mounts.push(mount.Source + ":" + mount.Destination)
         }
-      })
+      });
       return mounts.map(this.linebreak).join('')
     },
 
@@ -77,14 +77,11 @@ export default {
     },
 
     makeLink (container, text, secure) {
-
-      console.log("make link")
       if ( container.Labels.hasOwnProperty('com.dnsdock.image') ) {
         let url = secure ? "https://" : "http://"
         url += container.Labels['com.dnsdock.name'] + "." + container.Labels['com.dnsdock.image'] + ".vm"
         return "<a href='" + url + "' target='_blank'>" + text + "</a>"
       }
-
       return text
     }
   }

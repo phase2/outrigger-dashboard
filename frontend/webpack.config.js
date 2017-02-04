@@ -47,7 +47,7 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     proxy: {
-      '/api/*': 'http://localhost:9090/'
+      '/api/*': 'http://dashboard.outrigger.vm/'
     }
   },
   performance: {
