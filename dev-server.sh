@@ -6,7 +6,7 @@ popd
 
 docker rm outrigger-dashboard
 
-echo "Starting Outrigger Dashboard Server (you wont see anymore output unless there is an error)"
+echo "Starting Outrigger Dashboard Server"
 docker run -it \
     --name outrigger-dashboard \
     -e DOCKER_HOST \
