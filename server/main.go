@@ -48,7 +48,7 @@ func main() {
 	router.HandleFunc("/api/dnsrecords", GetDNSRecords).Methods("GET")
 	router.HandleFunc("/api/containers", GetContainers).Methods("GET")
 
-	port := 80
-	log.Printf("Server listening on port %d", port)
-	log.Fatal(http.ListenAndServe(":" + port, router))
+	port := ":80"
+	log.Printf("Server listening on port %s", port)
+	log.Fatal(http.ListenAndServe(port, router))
 }
