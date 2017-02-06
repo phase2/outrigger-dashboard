@@ -9,7 +9,6 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
 )
 
@@ -27,13 +26,13 @@ func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 }
 
 func GetContainers(w http.ResponseWriter, req *http.Request) {
-	if client, err := docker.NewClientFromEnv(); err == nil {
+	client, err := client.NewEnvClient()
+	if err != nil {
+		panic(err)
+	}
 
-		if containers, err := client.ListContainers(docker.ListContainersOptions{All: false}); err == nil {
-			json.NewEncoder(w).Encode(containers)
-		} else {
-			panic(err)
-		}
+	if containers, err := client.ContainerList(context.Background(), types.ContainerListOptions{All: false}); err == nil {
+		json.NewEncoder(w).Encode(containers)
 	} else {
 		panic(err)
 	}
