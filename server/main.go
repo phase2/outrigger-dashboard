@@ -13,19 +13,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Get all dnsdock records and return as JSON
 func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 	res, err := http.Get("http://dnsdock.devtools.vm/services")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	//var records []DNSRecord
 	var records map[string]interface{}
 	json.NewDecoder(res.Body).Decode(&records)
 
 	json.NewEncoder(w).Encode(records)
 }
 
+// Get all running containers and return as JSON
 func GetContainers(w http.ResponseWriter, req *http.Request) {
 	client, err := client.NewEnvClient()
 	if err != nil {
@@ -39,18 +40,21 @@ func GetContainers(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Listen to container lifecycle events so we can notify the dashboard client to refresh
 func SetupDockerEventListener() {
 	client, err := client.NewEnvClient()
 	if err != nil {
 		panic(err)
 	}
 
-	log.Print("Registering Docker Event Listener....")
+	// Listen to only these events
 	filters := filters.NewArgs()
 	filters.Add("event", "start")
 	filters.Add("event", "die")
 	filters.Add("event", "pause")
 	filters.Add("event", "unpause")
+
+	log.Print("Registering Docker Event Listener....")
 	messages, errs := client.Events(context.Background(), types.EventsOptions{Filters: filters})
 
 	loop:
@@ -62,6 +66,7 @@ func SetupDockerEventListener() {
 					}
 					break loop
 				case e := <-messages:
+					// Ping the dashboard here via websocket
 					log.Printf("Docker Event: %s", e.Action)
  			}
 		}
