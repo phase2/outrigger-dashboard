@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
 )
@@ -35,6 +39,30 @@ func GetContainers(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func SetupDockerEventListener() {
+	client, err := client.NewEnvClient()
+	if err != nil {
+		panic(err)
+	}
+
+	log.Print("Registering Docker Event Listener....")
+	messages, errs := client.Events(context.Background(), types.EventsOptions{})
+
+	loop:
+		for {
+			select {
+				case err := <-errs:
+					if err != nil && err != io.EOF {
+						log.Fatal(err)
+					}
+					break loop
+				case e := <-messages:
+					log.Print(e)
+ 			}
+		}
+}
+
+
 func Redirect(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, "/static/", 301)
 }
@@ -48,7 +76,13 @@ func main() {
 	router.HandleFunc("/api/dnsrecords", GetDNSRecords).Methods("GET")
 	router.HandleFunc("/api/containers", GetContainers).Methods("GET")
 
-	port := ":80"
-	log.Printf("Server listening on port %s", port)
-	log.Fatal(http.ListenAndServe(port, router))
+	// Start a goroutine for the http server event loop so we can
+	// still register for docker events on the main goroutine
+	go func() {
+		port := ":80"
+		log.Printf("Starting HTTP server listening on port %s", port)
+		log.Fatal(http.ListenAndServe(port, router))
+	}()
+
+	SetupDockerEventListener()
 }
