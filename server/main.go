@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/gorilla/mux"
 )
@@ -45,7 +46,12 @@ func SetupDockerEventListener() {
 	}
 
 	log.Print("Registering Docker Event Listener....")
-	messages, errs := client.Events(context.Background(), types.EventsOptions{})
+	filters := filters.NewArgs()
+	filters.Add("event", "start")
+	filters.Add("event", "die")
+	filters.Add("event", "pause")
+	filters.Add("event", "unpause")
+	messages, errs := client.Events(context.Background(), types.EventsOptions{Filters: filters})
 
 	loop:
 		for {
@@ -56,7 +62,7 @@ func SetupDockerEventListener() {
 					}
 					break loop
 				case e := <-messages:
-					log.Print(e)
+					log.Printf("Docker Event: %s", e.Action)
  			}
 		}
 }
