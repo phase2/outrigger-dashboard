@@ -57,21 +57,20 @@ func SetupDockerEventListener() {
 	log.Print("Registering Docker Event Listener....")
 	messages, errs := client.Events(context.Background(), types.EventsOptions{Filters: filters})
 
-	loop:
-		for {
-			select {
-				case err := <-errs:
-					if err != nil && err != io.EOF {
-						log.Fatal(err)
-					}
-					break loop
-				case e := <-messages:
-					// Ping the dashboard here via websocket
-					log.Printf("Docker Event: %s", e.Action)
- 			}
+loop:
+	for {
+		select {
+		case err := <-errs:
+			if err != nil && err != io.EOF {
+				log.Fatal(err)
+			}
+			break loop
+		case e := <-messages:
+			// Ping the dashboard here via websocket
+			log.Printf("Docker Event: %s", e.Action)
 		}
+	}
 }
-
 
 func Redirect(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, "/static/", 301)
