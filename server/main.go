@@ -37,12 +37,18 @@ func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(records)
 }
 
-// Query Docker for all *running* containers
-func GetContainers() []types.Container {
+// Create a Docker client from the current environment
+func GetDockerClient() (*client.Client) {
 	client, err := client.NewEnvClient()
 	if err != nil {
 		panic(err)
 	}
+	return client
+}
+
+// Query Docker for all *running* containers
+func GetContainers() []types.Container {
+	client := GetDockerClient()
 
 	if containers, err := client.ContainerList(context.Background(), types.ContainerListOptions{All: false}); err == nil {
 		return containers
@@ -52,8 +58,25 @@ func GetContainers() []types.Container {
 }
 
 // Get all running containers and encode response as JSON
-func GetContainerJson(w http.ResponseWriter, req *http.Request) {
+func GetContainersJson(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(GetContainers())
+}
+
+// Get the Container object for the given id
+func GetContainer(id string) types.ContainerJSON {
+	client := GetDockerClient()
+	container, err := client.ContainerInspect(context.Background(), id)
+	if err != nil {
+		panic(err)
+	}
+	return container
+}
+
+// Get JSON for deep inspections of a container
+func GetContainerJson(w http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	id := vars["id"]
+	json.NewEncoder(w).Encode(GetContainer(id))
 }
 
 // WebSocket to relay container events to client
@@ -128,7 +151,8 @@ func main() {
 
 	router.HandleFunc("/", Redirect).Methods("GET")
 	router.HandleFunc("/api/dnsrecords", GetDNSRecords).Methods("GET")
-	router.HandleFunc("/api/containers", GetContainerJson).Methods("GET")
+	router.HandleFunc("/api/container/{id:[a-z0-9]+}", GetContainerJson).Methods("GET")
+	router.HandleFunc("/api/containers", GetContainersJson).Methods("GET")
 	router.HandleFunc("/api/containers/ws", ContainerWebSocket).Methods("GET")
 
 	// Start a goroutine for the http server event loop so we can
