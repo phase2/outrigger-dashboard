@@ -11,7 +11,19 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+// Clients connected to the websocket
+var clients = make(map[*websocket.Conn]bool)
+
+// Channel for broadcast of Container changes
+var broadcast = make(chan []types.Container)
 
 // Get all dnsdock records and return as JSON
 func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
@@ -22,22 +34,54 @@ func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 
 	var records map[string]interface{}
 	json.NewDecoder(res.Body).Decode(&records)
-
 	json.NewEncoder(w).Encode(records)
 }
 
-// Get all running containers and return as JSON
-func GetContainers(w http.ResponseWriter, req *http.Request) {
+// Query Docker for all *running* containers
+func GetContainers() []types.Container {
 	client, err := client.NewEnvClient()
 	if err != nil {
 		panic(err)
 	}
 
 	if containers, err := client.ContainerList(context.Background(), types.ContainerListOptions{All: false}); err == nil {
-		json.NewEncoder(w).Encode(containers)
+		return containers
 	} else {
 		panic(err)
 	}
+}
+
+// Get all running containers and encode response as JSON
+func GetContainerJson(w http.ResponseWriter, req *http.Request) {
+	json.NewEncoder(w).Encode(GetContainers())
+}
+
+// WebSocket to relay container events to client
+func ContainerWebSocket(w http.ResponseWriter, req *http.Request) {
+	ws, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	defer ws.Close()
+
+	// Register the client
+	clients[ws] = true
+
+	for {
+		containers := <-broadcast
+
+		for client := range clients {
+			err := client.WriteJSON(containers)
+			if err != nil {
+				log.Printf("Error writing JSON: %v", err)
+				client.Close()
+				delete(clients, client)
+			}
+		}
+	}
+
 }
 
 // Listen to container lifecycle events so we can notify the dashboard client to refresh
@@ -68,6 +112,7 @@ loop:
 		case e := <-messages:
 			// Ping the dashboard here via websocket
 			log.Printf("Docker Event: %s", e.Action)
+			broadcast <- GetContainers()
 		}
 	}
 }
@@ -83,7 +128,8 @@ func main() {
 
 	router.HandleFunc("/", Redirect).Methods("GET")
 	router.HandleFunc("/api/dnsrecords", GetDNSRecords).Methods("GET")
-	router.HandleFunc("/api/containers", GetContainers).Methods("GET")
+	router.HandleFunc("/api/containers", GetContainerJson).Methods("GET")
+	router.HandleFunc("/api/containers/ws", ContainerWebSocket).Methods("GET")
 
 	// Start a goroutine for the http server event loop so we can
 	// still register for docker events on the main goroutine
