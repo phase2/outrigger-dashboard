@@ -1,16 +1,16 @@
 <template>
   <div class="col project">
     <h2>{{ name }}</h2>
-    <table class="table table-striped table-hover table-bordered">
+    <table class="table table-striped table-hover table-bordered table-responsive">
       <thead>
         <tr>
           <th>Service</th>
           <th>Container Name</th>
           <th>Image</th>
           <th>Domain Names</th>
-          <th>Network / IP</th>
-          <th>Ports</th>
-          <th>Mounts</th>
+          <th class="hidden-xs">Network / IP</th>
+          <th class="hidden-xs">Ports</th>
+          <th class="hidden-xs">Mounts</th>
         </tr>
       </thead>
       <tbody>
@@ -19,9 +19,9 @@
           <td>{{ container.Names[0] }}</td>
           <td>{{ container.Image }}</td>
           <td v-html="displayDNS(container)"></td>
-          <td v-html="displayNetworks(container)"></td>
-          <td v-html="displayPorts(container)"></td>
-          <td v-html="displayRemoteMounts(container)"></td>
+          <td v-html="displayNetworks(container)" class="hidden-xs"></td>
+          <td v-html="displayPorts(container)" class="hidden-xs"></td>
+          <td v-html="displayRemoteMounts(container)" class="hidden-xs"></td>
         </tr>
       </tbody>
     </table>
