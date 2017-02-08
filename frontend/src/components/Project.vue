@@ -1,7 +1,7 @@
 <template>
-  <div class="col project">
+  <div class="col project table-responsive">
     <h2>{{ name }}</h2>
-    <table class="table table-striped table-hover table-bordered table-responsive">
+    <table class="table table-striped table-hover table-bordered">
       <thead>
         <tr>
           <th>Service</th>
