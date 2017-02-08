@@ -37,50 +37,50 @@ export default {
 
   methods: {
 
-    displayNetworks(container) {
-      let networks = [];
+    displayNetworks (container) {
+      let networks = []
       for (let name in container.NetworkSettings.Networks) {
-        if ( container.NetworkSettings.Networks.hasOwnProperty(name) ) {
-          let settings = container.NetworkSettings.Networks[name];
-          networks.push(name + "(" + settings.IPAddress + ")")
+        if (container.NetworkSettings.Networks.hasOwnProperty(name)) {
+          let settings = container.NetworkSettings.Networks[name]
+          networks.push(name + '(' + settings.IPAddress + ')')
         }
       }
       return networks.map(this.linebreak).join('')
     },
 
-    displayPorts(container) {
-      let ports = [];
-      container.Ports.forEach( (port) => {
-        let portVal = port.PrivatePort + "/" + port.Type;
+    displayPorts (container) {
+      let ports = []
+      container.Ports.forEach((port) => {
+        let portVal = port.PrivatePort + '/' + port.Type
 
         if ([80, 443, 8080].includes(port.PrivatePort)) {
-          portVal = this.makeLink(container, portVal, port.PrivatePort == "443")
+          portVal = this.makeLink(container, portVal, port.PrivatePort === '443')
         }
 
         ports.push(portVal)
-      });
+      })
       return ports.map(this.linebreak).join('')
     },
 
-    displayRemoteMounts(container) {
-      let mounts = [];
-      container.Mounts.forEach( (mount) => {
-        if ( !mount.hasOwnProperty("Driver") ) {
-          mounts.push(mount.Source + ":" + mount.Destination)
+    displayRemoteMounts (container) {
+      let mounts = []
+      container.Mounts.forEach((mount) => {
+        if (!mount.hasOwnProperty('Driver')) {
+          mounts.push(mount.Source + ':' + mount.Destination)
         }
-      });
+      })
       return mounts.map(this.linebreak).join('')
     },
 
     linebreak (val) {
-      return "<p>" + val + "</p>";
+      return '<p>' + val + '</p>'
     },
 
     makeLink (container, text, secure) {
-      if ( container.Labels.hasOwnProperty('com.dnsdock.image') ) {
-        let url = secure ? "https://" : "http://"
-        url += container.Labels['com.dnsdock.name'] + "." + container.Labels['com.dnsdock.image'] + ".vm"
-        return "<a href='" + url + "' target='_blank'>" + text + "</a>"
+      if (container.Labels.hasOwnProperty('com.dnsdock.image')) {
+        let url = secure ? 'https://' : 'http://'
+        url += container.Labels['com.dnsdock.name'] + '.' + container.Labels['com.dnsdock.image'] + '.vm'
+        return '<a href="' + url + '" target="_blank">' + text + '</a>'
       }
       return text
     }

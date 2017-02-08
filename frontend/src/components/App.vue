@@ -17,7 +17,6 @@ import DnsRecords from './DnsRecords.vue'
 import ProjectList from './ProjectList.vue'
 import store from '../store'
 
-
 export default {
   name: 'app',
   data () {
@@ -32,22 +31,22 @@ export default {
   },
 
   created () {
-    this.update();
+    this.update()
 
-    let self = this;
-    this.ws = new WebSocket("ws://" + window.location.host + "/api/containers/ws");
-    this.ws.addEventListener('message', function(e) {
-      self.projects = store.processContainersByProject(JSON.parse(e.data));
-    });
+    let self = this
+    this.ws = new WebSocket('ws://' + window.location.host + '/api/containers/ws')
+    this.ws.addEventListener('message', function (e) {
+      self.projects = store.processContainersByProject(JSON.parse(e.data))
+    })
   },
 
   methods: {
-    update() {
+    update () {
       store.fetchDnsRecords().then(items => {
-        this.dnsRecords = items;
+        this.dnsRecords = items
       })
       store.fetchContainersByProject().then(items => {
-        this.projects = items;
+        this.projects = items
       })
     }
   }
