@@ -1,7 +1,7 @@
 <template>
   <div class="col project">
     <h2>{{ name }}</h2>
-    <table class="table table-striped table-hover table-bordered"">
+    <table class="table table-striped table-hover table-bordered">
       <thead>
         <tr>
           <th>Service</th>
