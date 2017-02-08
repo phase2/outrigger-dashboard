@@ -6,6 +6,8 @@ gox -osarch="Linux/amd64" -output="../dist/outrigger-dashboard"
 popd
 
 echo "Starting Outrigger Dashboard Server"
+docker stop outrigger-dashboard
+docker rm outrigger-dashboard
 docker run -it \
     --name outrigger-dashboard \
     -e DOCKER_HOST \
