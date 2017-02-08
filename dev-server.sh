@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 pushd server
+godep restore
 gox -osarch="Linux/amd64" -output="../dist/outrigger-dashboard"
 popd
 
