@@ -109,7 +109,8 @@ loop:
 				log.Fatal(err)
 			}
 			break loop
-		case <-messages:
+		case e := <-messages:
+			log.Printf("Received event '%s' from '%s'", e.Status, e.From);
 			// Broadcast the event to listeners
 			broadcast <- GetContainers()
 		}
