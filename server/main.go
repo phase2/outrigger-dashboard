@@ -109,9 +109,8 @@ loop:
 				log.Fatal(err)
 			}
 			break loop
-		case e := <-messages:
-			// Ping the dashboard here via websocket
-			log.Printf("Docker Event: %s", e.Action)
+		case <-messages:
+			// Broadcast the event to listeners
 			broadcast <- GetContainers()
 		}
 	}
