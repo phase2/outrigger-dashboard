@@ -79,9 +79,10 @@ store.fetchContainersByProject = () => {
  * Take an array of all containers and organize them by Compose project name
  */
 store.processContainersByProject = (containers) => {
+  const DEFAULT_PROJECT = 'unclassified'
   let projects = {}
   containers.forEach((container) => {
-    let projectName = 'unclassified'
+    let projectName = DEFAULT_PROJECT
     if (container.Labels.hasOwnProperty('com.docker.compose.project')) {
       projectName = container.Labels['com.docker.compose.project']
     }
@@ -92,6 +93,12 @@ store.processContainersByProject = (containers) => {
 
     projects[projectName].push(container)
   })
+
+  if (projects.hasOwnProperty(DEFAULT_PROJECT)) {
+    let unclassified = projects[DEFAULT_PROJECT]
+    delete projects[DEFAULT_PROJECT]
+    projects[DEFAULT_PROJECT] = unclassified
+  }
   return projects
 }
 

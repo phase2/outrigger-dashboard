@@ -7,6 +7,7 @@
           <th>Service</th>
           <th>Container Name</th>
           <th>Image</th>
+          <th>Domain Names</th>
           <th>Network / IP</th>
           <th>Ports</th>
           <th>Mounts</th>
@@ -17,6 +18,7 @@
           <td>{{ container.Labels['com.docker.compose.service'] }}</td>
           <td>{{ container.Names[0] }}</td>
           <td>{{ container.Image }}</td>
+          <td v-html="displayDNS(container)"></td>
           <td v-html="displayNetworks(container)"></td>
           <td v-html="displayPorts(container)"></td>
           <td v-html="displayRemoteMounts(container)"></td>
@@ -37,6 +39,30 @@ export default {
 
   methods: {
 
+    displayDNS (container) {
+      let names = []
+      if (container.Labels.hasOwnProperty('com.dnsdock.image')) {
+        names.push(container.Labels['com.dnsdock.name'] + '.' + container.Labels['com.dnsdock.image'] + '.vm')
+      }
+      if (container.Labels.hasOwnProperty('com.dnsdock.alias')) {
+        names.push(container.Labels['com.dnsdock.alias'])
+      }
+
+      // Need to also get any VIRTUAL_HOST env entries
+
+      let port = null
+      if (container.Ports.some((port) => { return port.PrivatePort === 80 })) {
+        port = 80
+      } else if (container.Ports.some((port) => { return port.PrivatePort === 8080 })) {
+        port = 8080
+      }
+
+      if (port) {
+        names = names.map((name) => { return this.makeLink(name, port) })
+      }
+      return names.map(this.linebreak).join('')
+    },
+
     displayNetworks (container) {
       let networks = []
       for (let name in container.NetworkSettings.Networks) {
@@ -52,11 +78,6 @@ export default {
       let ports = []
       container.Ports.forEach((port) => {
         let portVal = port.PrivatePort + '/' + port.Type
-
-        if ([80, 443, 8080].includes(port.PrivatePort)) {
-          portVal = this.makeLink(container, portVal, port.PrivatePort === '443')
-        }
-
         ports.push(portVal)
       })
       return ports.map(this.linebreak).join('')
@@ -76,13 +97,9 @@ export default {
       return '<p>' + val + '</p>'
     },
 
-    makeLink (container, text, secure) {
-      if (container.Labels.hasOwnProperty('com.dnsdock.image')) {
-        let url = secure ? 'https://' : 'http://'
-        url += container.Labels['com.dnsdock.name'] + '.' + container.Labels['com.dnsdock.image'] + '.vm'
-        return '<a href="' + url + '" target="_blank">' + text + '</a>'
-      }
-      return text
+    makeLink (domain, port) {
+      let url = 'http://' + domain + ':' + port
+      return '<a href="' + url + '" target="_blank">' + domain + '</a>'
     }
   }
 
