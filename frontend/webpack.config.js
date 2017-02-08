@@ -47,6 +47,10 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     proxy: {
+      '/api/*/ws': {
+        target: 'ws://dashboard.outrigger.vm/',
+        ws: true
+      },
       '/api/*': 'http://dashboard.outrigger.vm/'
     }
   },
