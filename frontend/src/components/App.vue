@@ -32,8 +32,13 @@ export default {
   },
 
   created () {
-    this.update()
-    store.on('dataloaded', this.update)
+    this.update();
+
+    let self = this;
+    this.ws = new WebSocket("ws://" + window.location.host + "/api/containers/ws");
+    this.ws.addEventListener('message', function(e) {
+      self.projects = store.processContainersByProject(JSON.parse(e.data));
+    });
   },
 
   methods: {

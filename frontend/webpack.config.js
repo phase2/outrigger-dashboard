@@ -1,6 +1,10 @@
 var path = require('path')
 var webpack = require('webpack')
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 module.exports = {
   entry: ['whatwg-fetch', './src/main.js'],
   output: {
@@ -10,6 +14,15 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        enforce: "pre",
+        include: [resolve('src'), resolve('test')],
+        options: {
+          formatter: require('eslint-friendly-formatter')
+        }
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -47,6 +60,10 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     proxy: {
+      '/api/*/ws': {
+        target: 'ws://dashboard.outrigger.vm/',
+        ws: true
+      },
       '/api/*': 'http://dashboard.outrigger.vm/'
     }
   },
