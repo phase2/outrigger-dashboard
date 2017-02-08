@@ -10,7 +10,7 @@
       </thead>
       <tbody>
         <tr v-for="entry in entries">
-          <td>{{ entry.name }}</td>
+          <td><a :href="makeLink(entry.name)" target="_blank">{{ entry.name }}</a></td>
           <td>{{ entry.ips | join(' || ') }}</td>
         </tr>
       </tbody>
@@ -24,6 +24,12 @@ export default {
 
   name: 'DnsRecords',
 
-  props: [ 'entries' ]
+  props: [ 'entries' ],
+
+  methods: {
+    makeLink (domainName) {
+      return 'http://' + domainName
+    }
+  }
 }
 </script>
