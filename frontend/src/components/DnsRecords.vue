@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="entry in entries">
+        <tr v-for="entry in sortedEntries">
           <td><a :href="makeLink(entry.name)" target="_blank">{{ entry.name }}</a></td>
           <td>{{ entry.ips | join(' || ') }}</td>
         </tr>
@@ -29,6 +29,16 @@ export default {
   methods: {
     makeLink (domainName) {
       return 'http://' + domainName
+    }
+  },
+
+  computed: {
+    sortedEntries() {
+      // Some weirdness with this not being an array early on, so lets cast it.
+      let iterable = Array.from(this.entries)
+      return iterable.sort((a, b) => {
+        return a.name.localeCompare(b.name)
+      })
     }
   }
 }
