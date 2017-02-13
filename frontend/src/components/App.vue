@@ -37,14 +37,23 @@ export default {
     this.ws = new WebSocket('ws://' + window.location.host + '/api/containers/ws')
     this.ws.addEventListener('message', function (e) {
       self.projects = store.processContainersByProject(JSON.parse(e.data))
+      self.loadDnsRecords()
     })
   },
 
   methods: {
     update () {
+      this.loadDnsRecords()
+      this.loadContainers()
+    },
+
+    loadDnsRecords() {
       store.fetchDnsRecords().then(items => {
         this.dnsRecords = items
       })
+    },
+
+    loadContainers() {
       store.fetchContainersByProject().then(items => {
         this.projects = items
       })
