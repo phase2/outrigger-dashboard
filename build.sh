@@ -12,3 +12,4 @@ npm run build
 popd
 
 docker build -t phase2/outrigger-dashboard .
+docker build -t outrigger/dashboard .
