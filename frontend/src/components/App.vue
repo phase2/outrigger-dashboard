@@ -1,7 +1,14 @@
 <template>
-  <div id="app" class="container-fluid">
+  <div id="app" class="container">
     <div class="jumbotron">
-      <h1>Outrigger Dashboard</h1>
+      <div class="project-title__wrapper">
+        <div class="media-left media-middle">
+          <img class="logo-image" src="../assets/logo.png">
+        </div>
+        <div class="media-body">
+          <h1 class="project-name">Outrigger Dashboard</h1>
+        </div>
+      </div>
     </div>
     <div class="container">
       <div class="row">
@@ -62,3 +69,19 @@ export default {
 
 }
 </script>
+<style>
+  .jumbotron {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-image {
+    max-width: 150px;
+  }
+
+  .media-body {
+    max-width: 650px;
+  }
+</style>
