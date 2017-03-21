@@ -1,7 +1,7 @@
 <template>
   <div id="dns-records" class="col">
     <h2>DNS Records</h2>
-    <table class="table table-striped table-hover table-bordered"">
+    <table class="table table-striped table-hover table-bordered">
       <thead>
         <tr>
           <th>Domain Name</th>
@@ -43,3 +43,26 @@ export default {
   }
 }
 </script>
+<style>
+  thead {
+    background-color: #0e2e41;
+    color: #ffffff;
+  }
+
+  th {
+    font-weight: normal;
+  }
+
+  a {
+    color: #008eb0;
+  }
+
+  a:hover {
+    color: #0e2e41;
+    text-decoration: none;
+  }
+
+  .table-hover tbody tr:hover td {
+    background-color: #E2E2E2;
+  }
+</style>
