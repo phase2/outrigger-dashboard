@@ -27,7 +27,7 @@ var broadcast = make(chan []types.Container)
 
 // Get all dnsdock records and return as JSON
 func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
-	res, err := http.Get("http://dnsdock.devtools.vm/services")
+	res, err := http.Get("http://dnsdock.outrigger.vm/services")
 	if err != nil {
 		panic(err.Error())
 	}
