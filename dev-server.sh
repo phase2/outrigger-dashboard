@@ -10,12 +10,10 @@ docker stop outrigger-dashboard
 docker rm outrigger-dashboard
 docker run -it \
     --name outrigger-dashboard \
-    -e DOCKER_HOST \
-    -e DOCKER_TLS_VERIFY \
-    -e DOCKER_CERT_PATH \
+    -e DOCKER_API_VERSION=1.24 \
     -l com.dnsdock.name=dashboard \
     -l com.dnsdock.image=outrigger \
-    -v $HOME:$HOME \
+    -v /var/run/docker.sock:/var/run/docker.sock \
     -v `pwd`/dist/outrigger-dashboard:/outrigger-dashboard \
     --rm \
-    phase2/outrigger-dashboard
+    outrigger/dashboard
