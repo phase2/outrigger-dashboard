@@ -3,7 +3,7 @@
     <div class="jumbotron">
       <div class="project-title__wrapper">
         <div class="media-left media-middle">
-          <img class="logo-image" src="dist/logo.png">
+          <img class="logo-image" src="../assets/logo.png">
         </div>
         <div class="media-body">
           <h1 class="project-name">Outrigger Dashboard</h1>
