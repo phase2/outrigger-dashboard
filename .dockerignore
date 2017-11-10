@@ -3,5 +3,6 @@ frontend/.idea
 frontend/src
 frontend/.babelrc
 frontend/package.json
+frontend/package-lock.json
 frontend/README.md
 frontend/webpack.config.js

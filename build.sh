@@ -3,11 +3,12 @@
 set -e
 
 pushd server
-godep restore
-gox -osarch="Linux/amd64" -output="../dist/outrigger-dashboard"
+dep ensure
+GOOS=linux GOARCH=amd64 go build -o ../dist/outrigger-dashboard
 popd
 
 pushd frontend
+npm install
 npm run build
 popd
 

@@ -29,6 +29,7 @@ var broadcast = make(chan []types.Container)
 func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 	res, err := http.Get("http://dnsdock.outrigger.vm/services")
 	if err != nil {
+		log.Println("Error getting DNS records")
 		panic(err.Error())
 	}
 
@@ -41,6 +42,7 @@ func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 func GetDockerClient() (*client.Client) {
 	client, err := client.NewEnvClient()
 	if err != nil {
+		log.Println("Error creating new Docker client")
 		panic(err)
 	}
 	return client
@@ -53,6 +55,7 @@ func GetContainers() []types.Container {
 	if containers, err := client.ContainerList(context.Background(), types.ContainerListOptions{All: false}); err == nil {
 		return containers
 	} else {
+		log.Println("Error finding all running containers")
 		panic(err)
 	}
 }
@@ -67,6 +70,7 @@ func GetContainer(id string) types.ContainerJSON {
 	client := GetDockerClient()
 	container, err := client.ContainerInspect(context.Background(), id)
 	if err != nil {
+		log.Printf("Error inspecting container: %s", id)
 		panic(err)
 	}
 	return container
@@ -83,7 +87,7 @@ func GetContainerJson(w http.ResponseWriter, req *http.Request) {
 func ContainerWebSocket(w http.ResponseWriter, req *http.Request) {
 	ws, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		log.Println(err)
+		log.Printf("Error upgrading websocket: %s", err.Error())
 		return
 	}
 
@@ -111,6 +115,7 @@ func ContainerWebSocket(w http.ResponseWriter, req *http.Request) {
 func SetupDockerEventListener() {
 	client, err := client.NewEnvClient()
 	if err != nil {
+		log.Println("Error creating Docker client")
 		panic(err)
 	}
 
@@ -129,6 +134,7 @@ loop:
 		select {
 		case err := <-errs:
 			if err != nil && err != io.EOF {
+				log.Println("Error returned from Docker event listener")
 				log.Fatal(err)
 			}
 			break loop
