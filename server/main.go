@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -30,7 +29,7 @@ var broadcast = make(chan []types.Container)
 func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 	res, err := http.Get("http://dnsdock.outrigger.vm/services")
 	if err != nil {
-		fmt.Println("Error getting DNS records")
+		log.Println("Error getting DNS records")
 		panic(err.Error())
 	}
 
@@ -43,7 +42,7 @@ func GetDNSRecords(w http.ResponseWriter, req *http.Request) {
 func GetDockerClient() (*client.Client) {
 	client, err := client.NewEnvClient()
 	if err != nil {
-		fmt.Println("Error creating new Docker client")
+		log.Println("Error creating new Docker client")
 		panic(err)
 	}
 	return client
@@ -56,7 +55,7 @@ func GetContainers() []types.Container {
 	if containers, err := client.ContainerList(context.Background(), types.ContainerListOptions{All: false}); err == nil {
 		return containers
 	} else {
-		fmt.Println("Error finding all running containers")
+		log.Println("Error finding all running containers")
 		panic(err)
 	}
 }
@@ -71,7 +70,7 @@ func GetContainer(id string) types.ContainerJSON {
 	client := GetDockerClient()
 	container, err := client.ContainerInspect(context.Background(), id)
 	if err != nil {
-		fmt.Printf("Error inspecting container: %s", id)
+		log.Printf("Error inspecting container: %s", id)
 		panic(err)
 	}
 	return container
@@ -88,7 +87,7 @@ func GetContainerJson(w http.ResponseWriter, req *http.Request) {
 func ContainerWebSocket(w http.ResponseWriter, req *http.Request) {
 	ws, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		fmt.Printf("Error upgrading websocket: %s", err.Error())
+		log.Printf("Error upgrading websocket: %s", err.Error())
 		return
 	}
 
@@ -103,7 +102,7 @@ func ContainerWebSocket(w http.ResponseWriter, req *http.Request) {
 		for client := range clients {
 			err := client.WriteJSON(containers)
 			if err != nil {
-				fmt.Printf("Error writing JSON: %v", err)
+				log.Printf("Error writing JSON: %v", err)
 				client.Close()
 				delete(clients, client)
 			}
@@ -116,7 +115,7 @@ func ContainerWebSocket(w http.ResponseWriter, req *http.Request) {
 func SetupDockerEventListener() {
 	client, err := client.NewEnvClient()
 	if err != nil {
-		fmt.Println("Error creating Docker client")
+		log.Println("Error creating Docker client")
 		panic(err)
 	}
 
@@ -135,7 +134,7 @@ loop:
 		select {
 		case err := <-errs:
 			if err != nil && err != io.EOF {
-				fmt.Println("Error returned from Docker event listener")
+				log.Println("Error returned from Docker event listener")
 				log.Fatal(err)
 			}
 			break loop
