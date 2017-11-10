@@ -1,8 +1,8 @@
-FROM docker:17.03
+FROM scratch
 
 COPY dist/outrigger-dashboard /outrigger-dashboard
 COPY frontend/  /app
 
 EXPOSE 80
 
-CMD [ "/outrigger-dashboard" ]
+ENTRYPOINT [ "/outrigger-dashboard" ]
