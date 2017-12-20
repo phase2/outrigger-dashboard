@@ -10,7 +10,6 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item"><a class="nav-link" href="http://outrigger.sh">What is Outrigger?</a></li>
           <li class="nav-item"><a class="nav-link" href="http://docs.outrigger.sh">Documentation</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://slack.outrigger.sh/">Join us on Slack</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               File an Issue
@@ -21,17 +20,16 @@
               <a class="dropdown-item" href="https://github.com/phase2/rig/issues">Outrigger CLI issues</a>
             </div>
           </li>
+          <li class="nav-item"><a class="nav-link" href="https://github.com/search?o=desc&q=topic%3Aoutrigger+org%3Aphase2&s=updated&type=Repositories">Contribute</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://slack.outrigger.sh/">Slack</a></li>
         </ul>
       </div>
     </nav>
 
     <header class="jumbotron">
-      <div class="project-title__wrapper">
-        <div class="media-body">
-          <h1 class="project-name">Outrigger Dashboard</h1>
-        </div>
-      </div>
+      <h1 class="display-3 mt-5">Outrigger Dashboard</h1>
     </header>
+
     <main class="container">
       <div class="row">
         <dns-records :entries="dnsRecords"></dns-records>
