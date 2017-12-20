@@ -8,20 +8,23 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item"><a class="nav-link" href="http://outrigger.sh">What is Outrigger?</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://docs.outrigger.sh">Documentation</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://outrigger.sh" title="Outrigger Homepage">What is Outrigger?</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://docs.outrigger.sh" title="Technical Documentation">Documentation</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://github.com/search?o=desc&q=topic%3Aoutrigger+org%3Aphase2&s=updated&type=Repositories" title="Review all the Outrigger repositories on Github"><i class="fa fa-github" aria-hidden="true"></i>&thinsp;Contribute</a></li>
+          <li class="nav-item"><a class="nav-link" href="http://slack.outrigger.sh/" title="Join us on Slack!"><i class="fa fa-slack" aria-hidden="true"></i>&thinsp;Slack</a></li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          <li role="separator" class="dropdown-divider"></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="supportDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               File an Issue
             </a>
-            <div class="dropdown-menu" aria-labelledby="supportDropdown">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="supportDropdown">
               <a class="dropdown-item" href="https://github.com/phase2/outrigger-dashboard/issues">Dashboard issues</a>
               <a class="dropdown-item" href="https://github.com/phase2/outrigger-docs/issues">Documentation issues</a>
-              <a class="dropdown-item" href="https://github.com/phase2/rig/issues">Outrigger CLI issues</a>
+              <a class="dropdown-item" href="https://github.com/phase2/rig/issues">Outrigger CLI (rig) issues</a>
             </div>
           </li>
-          <li class="nav-item"><a class="nav-link" href="https://github.com/search?o=desc&q=topic%3Aoutrigger+org%3Aphase2&s=updated&type=Repositories">Contribute</a></li>
-          <li class="nav-item"><a class="nav-link" href="http://slack.outrigger.sh/">Slack</a></li>
         </ul>
       </div>
     </nav>
