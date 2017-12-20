@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+
+  serve:
+    #build: .
+    image: outrigger/dashboardl:latest
+    container_name: outrigger-dashboard-dev
+    labels:
+      com.dnsdock.name: dev-dash
+      com.dnsdock.image: outrigger
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
