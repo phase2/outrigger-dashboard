@@ -30,7 +30,7 @@ RUN npm run build
 #
 # Build the operating container.
 #
-FROM scratch
+FROM alpine:3.6
 
 COPY --from=server /go/src/github.com/phase2/outrigger-dashboard/dist/outrigger-dashboard /outrigger-dashboard
 COPY --from=frontend /code/frontend/ /app
@@ -38,3 +38,6 @@ COPY --from=frontend /code/frontend/ /app
 EXPOSE 80
 
 ENTRYPOINT [ "/outrigger-dashboard" ]
+
+# Copy operation resets permissions.
+RUN chmod +x /outrigger-dashboard
