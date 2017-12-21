@@ -1,5 +1,5 @@
 <template>
-  <div class="col project table-responsive">
+  <div class="project table-responsive">
     <h2>{{ name }}</h2>
     <table class="table table-striped table-hover table-bordered">
       <thead>
