@@ -1,0 +1,22 @@
+version: '3.3'
+
+services:
+
+  serve:
+    build: .
+    container_name: outrigger_dashboard_dev
+    labels:
+      com.dnsdock.name: dev-dash
+      com.dnsdock.image: outrigger
+    network_mode: bridge
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  frontend:
+    build: frontend
+    container_name: outrigger_dashboard_frontend
+    labels:
+      com.dnsdock.name: dev-dash-frontend
+      com.dnsdock.image: outrigger
+    network_mode: bridge
+    working_dir: /usr/share/nginx/html
